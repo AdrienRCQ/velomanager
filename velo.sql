@@ -1,0 +1,5 @@
+CREATE TABLE bikes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    marque VARCHAR(100),
+    modele VARCHAR(100)
+);

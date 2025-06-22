@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion de Vélos</title>
+</head>
+<body >
+  <h1 >Gestion de Vélos</h1>
+
+  <form >
+    <input type="text" id="Brand" >
+    <input type="text" id="Model">
+    <input type="text" id="Status">
+    <button onclick="newBike()">Ajouter</button>
+  </form>
+
+  <h2 >Liste des Vélos</h2>
+  <ul>
+    <template x-for="bike in bikes" :key="bike.ID">
+      <li >
+        <strong x-text="bike.Brand"></strong> - <span x-text="bike.Model"></span> - <em x-text="bike.Status"></em>
+        <button @click="deleteBike(bike.ID)" >Supprimer</button>
+      </li>
+    </template>
+  </ul>
+
+  <script>
+    function bikeApp() {
+      return {
+        bikes: [],
+        newBike: { Brand: '', Model: '', Status: '' },
+
+        fetchBikes() {
+          fetch('/bikes')
+            .then(res => res.json())
+            .then(data => this.bikes = data);
+        },
+
+        addBike() {
+          fetch('bikes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(this.newBike)
+          }).then(() => {
+            this.newBike = { Brand: '', Model: '', Status: '' };
+            this.fetchBikes();
+          });
+        },
+
+
+        deleteBike(id) {
+          fetch(`/api/bikes/${id}`, { method: 'DELETE' })
+            .then(() => this.fetchBikes());
+        },
+
+        init() {
+          this.fetchBikes();
+        }
+      }
+    }
+    function newBike() {
+        var brand = document.getElementById("Brand").value;
+        window.alert(brand)
+    }
+  </script>
+</body>
+</html>
