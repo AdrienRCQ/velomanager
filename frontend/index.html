@@ -12,6 +12,7 @@
     <input type="text" id="Model">
     <input type="text" id="Status">
     <button onclick="newBike()">Ajouter</button>
+    <button onclick="getData()">Lister</button>
   </form>
 
   <h2 >Liste des Vélos</h2>
@@ -25,6 +26,22 @@
   </ul>
 
   <script>
+  async function getData() {
+    const url = "http://192.168.115.146:8080/bikes";
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+
     function bikeApp() {
       return {
         bikes: [],
@@ -65,3 +82,5 @@
   </script>
 </body>
 </html>
+
+
