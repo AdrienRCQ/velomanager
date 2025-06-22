@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"velomanager/models"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,15 @@ import (
 )
 
 func main() {
-	dsn := "user:password@tcp(127.0.0.1:3306)/velodb?parseTime=true"
+	var sql_password, sql_login string
+	sql_address := "127.0.0.1:3306"
+	fmt.Println("Golang x DataBase")
+	// Setup connection for my db
+	fmt.Scanln(&sql_login)
+	fmt.Println("Enter your login")
+	fmt.Scanln(&sql_password)
+	fmt.Println("Enter your password")
+	dsn := sql_login + ":" + sql_password + "@tcp(" + sql_address + ")/velodb?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("échec de la connexion à la base MySQL")
