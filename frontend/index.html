@@ -2,85 +2,35 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Gestion de Vélos</title>
+  <title>Liste des vélos</title>
 </head>
-<body >
-  <h1 >Gestion de Vélos</h1>
-
-  <form >
-    <input type="text" id="Brand" >
-    <input type="text" id="Model">
-    <input type="text" id="Status">
-    <button onclick="newBike()">Ajouter</button>
-    <button onclick="getData()">Lister</button>
-  </form>
-
-  <h2 >Liste des Vélos</h2>
-  <ul>
-    <template x-for="bike in bikes" :key="bike.ID">
-      <li >
-        <strong x-text="bike.Brand"></strong> - <span x-text="bike.Model"></span> - <em x-text="bike.Status"></em>
-        <button @click="deleteBike(bike.ID)" >Supprimer</button>
-      </li>
-    </template>
-  </ul>
+<body>
+  <h1>Vélos</h1>
+  <button id="loadBikes">Charger les vélos</button>
+  <ul id="bikesList"></ul>
 
   <script>
-  async function getData() {
-    const url = "http://192.168.115.146:8080/bikes";
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-
-      const json = await response.json();
-      console.log(json);
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
-
-
-    function bikeApp() {
-      return {
-        bikes: [],
-        newBike: { Brand: '', Model: '', Status: '' },
-
-        fetchBikes() {
-          fetch('/bikes')
-            .then(res => res.json())
-            .then(data => this.bikes = data);
-        },
-
-        addBike() {
-          fetch('bikes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.newBike)
-          }).then(() => {
-            this.newBike = { Brand: '', Model: '', Status: '' };
-            this.fetchBikes();
+    document.getElementById("loadBikes").addEventListener("click", () => {
+      fetch("http://localhost:8080/bikes")
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Erreur réseau");
+          }
+          return response.json();
+        })
+        .then(data => {
+          const list = document.getElementById("bikesList");
+          list.innerHTML = ""; // On vide la liste avant de l'afficher
+          data.forEach(bike => {
+            const item = document.createElement("li");
+            item.textContent = `Vélo ID: ${bike.id}, Modèle: ${bike.model}`;
+            list.appendChild(item);
           });
-        },
-
-
-        deleteBike(id) {
-          fetch(`/api/bikes/${id}`, { method: 'DELETE' })
-            .then(() => this.fetchBikes());
-        },
-
-        init() {
-          this.fetchBikes();
-        }
-      }
-    }
-    function newBike() {
-        var brand = document.getElementById("Brand").value;
-        window.alert(brand)
-    }
+        })
+        .catch(error => {
+          console.error("Erreur lors du fetch :", error);
+        });
+    });
   </script>
 </body>
 </html>
-
-

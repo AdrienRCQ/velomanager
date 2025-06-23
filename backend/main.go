@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+
+
 func main() {
 	var sql_password, sql_login string
 	sql_address := "127.0.0.1:3306"
